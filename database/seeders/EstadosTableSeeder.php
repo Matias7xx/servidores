@@ -1,0 +1,47 @@
+<?php
+
+namespace Database\Seeders;
+
+use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
+
+class EstadosTableSeeder extends Seeder
+{
+    /**
+     * Run the database seeds.
+     */
+    public function run(): void
+    {
+        $estados = [
+            ['nome' => 'Acre', 'sigla' => 'AC', 'codigo' => 12],
+            ['nome' => 'Alagoas', 'sigla' => 'AL', 'codigo' => 27],
+            ['nome' => 'Amapá', 'sigla' => 'AP', 'codigo' => 16],
+            ['nome' => 'Amazonas', 'sigla' => 'AM', 'codigo' => 13],
+            ['nome' => 'Bahia', 'sigla' => 'BA', 'codigo' => 29],
+            ['nome' => 'Ceará', 'sigla' => 'CE', 'codigo' => 23],
+            ['nome' => 'Distrito Federal', 'sigla' => 'DF', 'codigo' => 53],
+            ['nome' => 'Espírito Santo', 'sigla' => 'ES', 'codigo' => 32],
+            ['nome' => 'Goiás', 'sigla' => 'GO', 'codigo' => 52],
+            ['nome' => 'Maranhão', 'sigla' => 'MA', 'codigo' => 21],
+            ['nome' => 'Mato Grosso', 'sigla' => 'MT', 'codigo' => 51],
+            ['nome' => 'Mato Grosso do Sul', 'sigla' => 'MS', 'codigo' => 50],
+            ['nome' => 'Minas Gerais', 'sigla' => 'MG', 'codigo' => 31],
+            ['nome' => 'Pará', 'sigla' => 'PA', 'codigo' => 15],
+            ['nome' => 'Paraíba', 'sigla' => 'PB', 'codigo' => 25],
+            ['nome' => 'Paraná', 'sigla' => 'PR', 'codigo' => 41],
+            ['nome' => 'Pernambuco', 'sigla' => 'PE', 'codigo' => 26],
+            ['nome' => 'Piauí', 'sigla' => 'PI', 'codigo' => 22],
+            ['nome' => 'Rio de Janeiro', 'sigla' => 'RJ', 'codigo' => 33],
+            ['nome' => 'Rio Grande do Norte', 'sigla' => 'RN', 'codigo' => 24],
+            ['nome' => 'Rio Grande do Sul', 'sigla' => 'RS', 'codigo' => 43],
+            ['nome' => 'Rondônia', 'sigla' => 'RO', 'codigo' => 11],
+            ['nome' => 'Roraima', 'sigla' => 'RR', 'codigo' => 14],
+            ['nome' => 'Santa Catarina', 'sigla' => 'SC', 'codigo' => 42],
+            ['nome' => 'São Paulo', 'sigla' => 'SP', 'codigo' => 35],
+            ['nome' => 'Sergipe', 'sigla' => 'SE', 'codigo' => 28],
+            ['nome' => 'Tocantins', 'sigla' => 'TO', 'codigo' => 17],
+        ];
+
+        DB::table('estados')->insert($estados);
+    }
+}

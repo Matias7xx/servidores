@@ -1,0 +1,25 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Certifique-se de que DaisyUI está incluído */
+@import 'daisyui';
+
+@layer components {
+  .tabela-bonita {
+    @apply table-auto w-full text-sm text-left text-gray-600 border border-gray-300;
+  }
+
+  .tabela-bonita th,
+  .tabela-bonita td {
+    @apply px-4 py-2 border border-gray-300;
+  }
+
+  .tabela-bonita tbody tr:nth-child(even) {
+    @apply bg-gray-50;
+  }
+
+  .tabela-bonita tbody tr:hover {
+    @apply bg-gray-100;
+  }
+}
