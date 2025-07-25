@@ -9,6 +9,12 @@ export default defineConfig({
                 'resources/js/app.js',
             ],
             refresh: true,
+            publicDirectory: 'public',
+            buildDirectory: 'build',
         }),
     ],
+    build: {
+        chunkSizeWarningLimit: 2000, // Aumentar limite para aceitar bundle maior
+    },
+
 });

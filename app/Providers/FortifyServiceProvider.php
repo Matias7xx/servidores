@@ -69,7 +69,7 @@ class FortifyServiceProvider extends ServiceProvider
                             $user = User::where('matricula', $servidor_dados['matricula'])->first();
 
                             /*salvar a imagem do servidor na sessão*/
-                            $url_foto = Storage::disk('s3')->temporaryUrl("funcionais/{$servidor_dados['cpf']}_F.jpg", now()->addMinutes(5));
+                            $url_foto = Storage::disk('s3')->temporaryUrl("{$servidor_dados['cpf']}_F.jpg", now()->addMinutes(5));
                             session()->put('foto_servidor', $url_foto);
                             session()->put('servidor_nome', $servidor_dados['nome']);
 

@@ -46,7 +46,7 @@
                     <label class="block mt-1 text-sm">
                         <input
                             class="block w-full text-sm focus:border-gray-400 focus:outline-none focus:shadow-outline-gray form-input rounded-md"
-                            type="password" name="password" placeholder="Senha" required value="adm"/>
+                            type="password" name="password" placeholder="Senha" required value=""/>
                     </label>
                     <button type="submit"
                         class="flex items-center justify-center w-full px-4 py-2 mt-1 text-sm font-medium leading-5 transition-colors duration-150 bg-[rgb(193,168,90)] border border-transparent rounded-lg active:bg-gray-600 hover:bg-gray-700 focus:outline-none focus:shadow-outline-gray text-gray-900 dark:text-black">

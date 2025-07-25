@@ -7,14 +7,13 @@
     <link rel="icon" href="{{ asset('storage/brasaopc.ico') }}" type="image/x-icon">
     <title>Polícia Civil da Paraíba</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="{{ asset('./assets/css/tailwind.output.css') }}" />
-    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
-    <script src="{{ asset('./assets/js/init-alpine.js') }}"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.css" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js" defer></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
-    {{-- <script src="https://unpkg.com/alpinejs" defer></script> --}}
-    @vite('./resources/css/app.css')
+    <link rel="stylesheet" href="{{ asset('/assets/css/tailwind.output.css') }}" />
+    <script src="{{ asset('/assets/js/alpinejs@3.x.x.min.js') }}"></script>
+    <script src="{{ asset('/assets/js/init-alpine.js') }}"></script>
+    <link rel="stylesheet" href="{{ asset('/assets/css/chartjs@2.9.3.min.css') }}" />
+    <script src="{{ asset('/assets/js/chartjs@2.9.3.min.js') }}" defer></script>
+    <script src="{{ asset('/assets/js/jquery@3.1.0.min.js')}}"></script>
+    @vite('resources/css/app.css')
 </head>
 
 <body>
@@ -60,8 +59,8 @@
         });
     </script>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
+    <script src="{{ asset('/assets/js/jquery@3.6.4.min.js')}}"></script>
+    <script src="{{ asset('/assets/js/jquery.mask@1.14.16.min.js')}}"></script>
 
     <script>
         $(document).ready(function() {
