@@ -19,7 +19,7 @@
             <div class="col-span-1">
                 <label class="label dark:text-gray-700">Área</label>
                 <select name="area_id" class="w-full border border-gray-300 rounded-lg p-1">
-                    @if($servidorFormacao->formacaoServidorCurso->id > 0)
+                    @if(isset($servidorFormacao->formacaoServidorCurso->id) && ($servidorFormacao->formacaoServidorCurso->id > 0))
                         <option value="{{ $servidorFormacao->formacaoServidorCurso->formacaoClasse->formacaoArea->id }}">
                             {{ $servidorFormacao->formacaoServidorCurso->formacaoClasse->formacaoArea->area }}
                         </option>
@@ -35,7 +35,7 @@
             <div class="col-span-1">
                 <label class="label dark:text-gray-700">Classe</label>
                 <select name="classe_id" class="w-full border-gray-300 rounded-lg p-1">
-                    @if($servidorFormacao->formacaoServidorCurso->id > 0)
+                    @if(isset($servidorFormacao->formacaoServidorCurso->id) && ($servidorFormacao->formacaoServidorCurso->id > 0))
                         <option value="{{ $servidorFormacao->formacaoServidorCurso->formacaoClasse->id }}">
                             {{ $servidorFormacao->formacaoServidorCurso->formacaoClasse->classe }}
                         </option>
@@ -51,7 +51,7 @@
             <div class="col-span-1">
                 <label class="label dark:text-gray-700">Curso</label>
                 <select name="curso_id" class="w-full border-gray-300 rounded-lg p-1">
-                    @if($servidorFormacao->formacaoServidorCurso->id > 0)
+                    @if(isset($servidorFormacao->formacaoServidorCurso->id) && ($servidorFormacao->formacaoServidorCurso->id > 0))
                         <option value="{{ $servidorFormacao->formacaoServidorCurso->id }}">
                             {{ $servidorFormacao->formacaoServidorCurso->curso }}
                         </option>
@@ -136,14 +136,18 @@
     const selectClasse = document.querySelector('select[name="classe_id"]');
     const selectCurso = document.querySelector('select[name="curso_id"]');
 
-    function limparSelectPreservandoPrimeira(select) {
-        const primeiraOpcao = select.options[0];
+    function limparSelect(select) {
         select.innerHTML = '';
-        select.appendChild(primeiraOpcao);
+        const optionDefault = document.createElement('option');
+        optionDefault.value = '';
+        if (select === selectArea) optionDefault.text = 'Selecione a área';
+        else if (select === selectClasse) optionDefault.text = 'Selecione a classe';
+        else if (select === selectCurso) optionDefault.text = 'Selecione o curso';
+        select.appendChild(optionDefault);
     }
 
     function popularAreas() {
-        limparSelectPreservandoPrimeira(selectArea);
+        limparSelect(selectArea);
         areas.forEach(area => {
             const option = document.createElement('option');
             option.value = area.id;
@@ -153,8 +157,8 @@
     }
 
     function popularClasses(areaId) {
-        limparSelectPreservandoPrimeira(selectClasse);
-        limparSelectPreservandoPrimeira(selectCurso);
+        limparSelect(selectClasse);
+        limparSelect(selectCurso);
 
         if (!areaId) return;
 
@@ -168,7 +172,7 @@
     }
 
     function popularCursos(classeId) {
-        limparSelectPreservandoPrimeira(selectCurso);
+        limparSelect(selectCurso);
 
         if (!classeId) return;
 
@@ -183,12 +187,13 @@
 
     selectArea.addEventListener('change', function () {
         popularClasses(this.value);
+        limparSelect(selectCurso);
     });
 
     selectClasse.addEventListener('change', function () {
         popularCursos(this.value);
     });
 
-    // Popula a área ao carregar a página
+    // Popula área ao carregar
     popularAreas();
 </script>

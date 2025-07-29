@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Http\Requests\ServidorFormacaoRequest;
 use App\Http\Requests\ServidorFormacaoRequestUpdate;
 use App\Models\FormacaoArea;
+use App\Models\FormacaoClasse;
+use App\Models\FormacaoCurso;
 use App\Models\ServidorFormacao;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -92,6 +94,28 @@ class ServidorFormacaoController extends Controller
             'formacao_curso' => $cursos,
         ]);
     }
+
+//     public function create()
+// {
+//     // Buscar diretamente do banco de dados as áreas, classes e cursos com status ativo
+//     $areas = FormacaoArea::where('status', 'A')
+//                 ->orderBy('area')
+//                 ->get();
+
+//     $classes = FormacaoClasse::where('status', 'A')
+//                 ->orderBy('classe')
+//                 ->get();
+
+//     $cursos = FormacaoCurso::where('status', 'A')
+//                 ->orderBy('curso')
+//                 ->get();
+
+//     return view('servidores.formacao.create', [
+//         'formacao_area' => $areas->toArray(),
+//         'formacao_classe' => $classes->toArray(),
+//         'formacao_curso' => $cursos->toArray(),
+//     ]);
+// }
 
 
     /**

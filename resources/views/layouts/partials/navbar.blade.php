@@ -4,7 +4,7 @@
         <div class="py-2 text-white dark:text-gray-400">
             <div class="flex items-center ml-6 space-x-3">
                 <!-- Brasão -->
-                <img src="{{ asset('storage/images/brasaopc.png') }}" alt="Brasão da Polícia Civil da Paraíba"
+                <img src="{{ asset('/images/brasaopc.png') }}" alt="Brasão da Polícia Civil da Paraíba"
                     class="w-10 h-10 object-contain" />
 
                 <!-- Textos -->

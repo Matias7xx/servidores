@@ -3,8 +3,9 @@
 
 <head>
     <meta charset="UTF-8" />
+    <link rel="icon" href="{{ asset('/images/brasaopc.ico') }}" type="image/x-icon">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Login - Windmill Dashboard</title>
+    <title>Servidores - PCPB</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="../assets/css/tailwind.output.css" />
     <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js" defer></script>
@@ -17,7 +18,7 @@
     <div class="flex items-center min-h-screen bg-[rgb(45,49,51)]">
         <div class="flex flex-col w-96 mx-auto overflow-hidden rounded-lg ">
             <div class="flex justify-center items-center">
-                <img class="w-3/4" src="../assets/img/brasao_pcpb_branca.png" alt="Office" />
+                <img class="w-3/4" src="/images/brasao_pcpb_branca.png" alt="Office" />
             </div>
             <div class="font-semibold text-white font-sans text-3xl mb-9 mt-2 text-center">
                 Polícia Civil da Paraíba

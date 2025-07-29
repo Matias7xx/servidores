@@ -1,7 +1,7 @@
 {{-- {{dd($avaliacao)}} --}}
 <div style="display: flex; align-items: center; justify-content: center; gap: 20px; overflow: hidden; margin: 10px;">
     <div style="height: 80px; max-width: 100%;">
-        <img src="{{ asset('assets/img/brasao_pcpb.png') }}" alt="Brasão PCPB"
+        <img src="{{ asset('/images/brasao_pcpb.png') }}" alt="Brasão PCPB"
             style="height: 80px; max-width: 100%; object-fit: contain;">
     </div>
     <div style="text-align: right;">

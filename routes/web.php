@@ -10,11 +10,15 @@ use App\Http\Controllers\ServidorDependenteController;
 use App\Http\Controllers\ServidorFormacaoController;
 use Illuminate\Auth\Middleware\Authenticate;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\URL;
+
+URL::forceScheme(env('HTTP_SCHEMA'));
+URL::forceRootUrl(env('APP_URL'));
 
 Route::middleware([Authenticate::class])->group(function() {
     //Route::get('/', function () { return view('home');});
     // Route::get('/home', function () { return view('home'); })->middleware(['auth', 'verified'])->name('home');
-    Route::get('/home', [ServidorController::class, 'home'])->name('home');
+    //Route::get('/home', [ServidorController::class, 'home'])->name('home');
     Route::get('/', [ServidorController::class, 'home'])->name('home');
 
 
