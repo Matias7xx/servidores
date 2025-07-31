@@ -428,7 +428,7 @@ border-gray-300 @endif" />
                     <option value="{{ old('nome', $servidor->estado) }}">{{ $servidor->estado }}</option>
                     @foreach ($estados as $estado)
                         <option value="{{ $estado->codigo }}">
-                            {{ $estado->sigla }}
+                            {{ $estado->nome }}
                         </option>
                     @endforeach
                 </select>

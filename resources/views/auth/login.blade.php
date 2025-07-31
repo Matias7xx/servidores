@@ -18,7 +18,7 @@
     <div class="flex items-center min-h-screen bg-[rgb(45,49,51)]">
         <div class="flex flex-col w-96 mx-auto overflow-hidden rounded-lg ">
             <div class="flex justify-center items-center">
-                <img class="w-3/4" src="/images/brasao_pcpb_branca.png" alt="Office" />
+                <img class="w-3/4" src="{{ asset('images/brasao_pcpb_branca.png') }}" alt="Brasão Polícia Civil da Paraíba" />
             </div>
             <div class="font-semibold text-white font-sans text-3xl mb-9 mt-2 text-center">
                 Polícia Civil da Paraíba
