@@ -12,9 +12,9 @@ class ServidorDependenteController extends Controller
 
     public function index()
     {
-        $user = User::where('matricula',auth()->guard('web')->user()->matricula)
-        ->first();
-        
+        $user = User::where('matricula', auth()->guard('web')->user()->matricula)
+            ->first();
+
         // Busca os dependentes do servidor logado
         $dependentes = ServidorDependente::where('servidor_matricula', auth()->guard('web')->user()->matricula)
             ->where('status', 'A')
@@ -26,8 +26,8 @@ class ServidorDependenteController extends Controller
 
     public function create()
     {
-        $user = User::where('matricula',auth()->guard('web')->user()->matricula)
-        ->first();
+        $user = User::where('matricula', auth()->guard('web')->user()->matricula)
+            ->first();
         return view('servidores.dependentes.create', compact('user'));
     }
 
@@ -70,24 +70,24 @@ class ServidorDependenteController extends Controller
         $validated['historico'] = $request['historico'];
         $validated['status'] = $request['status'];
 
-       $dependente = ServidorDependente::where('cpf', $validated['cpf'])
-                ->where('servidor_matricula', $request['matricula'])
-                ->first();
-        if ($dependente) {            
-            
+        $dependente = ServidorDependente::where('cpf', $validated['cpf'])
+            ->where('servidor_matricula', $request['matricula'])
+            ->first();
+        if ($dependente) {
+
             if ($dependente->status == 'I') {
                 return redirect()->back()->with([
                     'showConfirmation' => true,
                     'message' => 'Este dependente já está cadastrado, porém está inativo. Deseja reativá-lo?',
                     'dependenteId' => $dependente->id,
                     'confirmation' => true
-                ])->withInput();            
-            }            
+                ])->withInput();
+            }
             return redirect()->back()->with('error', 'O CPF do(a) dependente já foi cadastrado no sistema para o cpf do(a) servidor(a)!')->withInput();
         }
 
         $validated['created_at'] = now();
-        $validated['updated_at'] = now();        
+        $validated['updated_at'] = now();
         $validated['status'] = 'A';
 
         ServidorDependente::create($validated);
@@ -100,8 +100,8 @@ class ServidorDependenteController extends Controller
      */
     public function show(ServidorDependente $servidorDependente)
     {
-        $user = User::where('matricula',auth()->guard('web')->user()->matricula)
-        ->first();
+        $user = User::where('matricula', auth()->guard('web')->user()->matricula)
+            ->first();
 
         // Busca os dependentes do servidor logado
         $dependentes = ServidorDependente::where('servidor_matricula', auth()->guard('web')->user()->matricula)
@@ -117,8 +117,8 @@ class ServidorDependenteController extends Controller
      */
     public function edit($id)
     {
-        $user = User::where('matricula',auth()->guard('web')->user()->matricula)
-        ->first();
+        $user = User::where('matricula', auth()->guard('web')->user()->matricula)
+            ->first();
         $servidorDependente = ServidorDependente::findOrFail($id);
         return view('servidores.dependentes.edit', compact('servidorDependente', 'user'));
     }
@@ -139,7 +139,6 @@ class ServidorDependenteController extends Controller
 
             // Passar o nome do arquivo para o campo 'documento' no banco
             $validated['documento'] = $filename;
-            
         }
 
         // Verifica se houve alteracoes nos campos
@@ -157,15 +156,14 @@ class ServidorDependenteController extends Controller
             $fieldsToCompare['documento'] = 'documento';
         }
 
-        $alteracoes = [];
+        $alteracoes = "";
         foreach ($fieldsToCompare as $dbField => $requestField) {
             if ($dependente->$dbField != $request[$requestField]) {
                 $hasChanges = true;
-                $alteracoes[] = [
-                    'campo' => $dbField,
-                    'valor_antigo' => $dependente->$dbField,
-                    'valor_novo' => $request[$requestField]
-                ];
+                $alteracoes .= "[" .
+                    'campo: ' . $dbField . ", " .
+                    'valor_antigo: ' . $dependente->$dbField . ", " .
+                    'valor_novo: ' . $request[$requestField];
             }
         }
 
@@ -180,7 +178,7 @@ class ServidorDependenteController extends Controller
         $novaAtualizacao = [
             "usuario_id" => $request['id'],
             "data" => now(),
-            "alteracao" => "Atualizacao dos dados do dependente".$alteracoes
+            "alteracao" => "Atualizacao dos dados do dependente" . $alteracoes
         ];
 
         $historico[] = $novaAtualizacao;
@@ -232,61 +230,60 @@ class ServidorDependenteController extends Controller
     }
 
     public function reativar(Request $request)
-        {
-            try {
-                $historico = [];
-                $dependente = ServidorDependente::findOrFail($request['id_dependente']);
-                if ($dependente && $dependente->historico) {
-                    $historico = json_decode($dependente->historico, true);
-                }
-    
-                $novaAtualizacao = [
-                    "usuario_matricula" => $request['matricula_servidor'],
-                    "data" => now(),
-                    "alteracao" => "Reativacao do(a) dependente"
-                ];
-    
-                $historico[] = $novaAtualizacao;
-    
-                $dependente->update([
-                    'status' => 'A',
-                    'historico' => json_encode($historico),
-                    'updated_at' => now()
-                ]);
-    
-                return redirect('/servidores/dependentes')->with('success', 'Dependente reativado com sucesso!');            
-            } catch (\Exception $e) {
-                return redirect()->back()->with('error', 'Erro ao reativar dependente!');
+    {
+        try {
+            $historico = [];
+            $dependente = ServidorDependente::findOrFail($request['id_dependente']);
+            if ($dependente && $dependente->historico) {
+                $historico = json_decode($dependente->historico, true);
             }
+
+            $novaAtualizacao = [
+                "usuario_matricula" => $request['matricula_servidor'],
+                "data" => now(),
+                "alteracao" => "Reativacao do(a) dependente"
+            ];
+
+            $historico[] = $novaAtualizacao;
+
+            $dependente->update([
+                'status' => 'A',
+                'historico' => json_encode($historico),
+                'updated_at' => now()
+            ]);
+
+            return redirect('/servidores/dependentes')->with('success', 'Dependente reativado com sucesso!');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Erro ao reativar dependente!');
         }
+    }
 
     public function reativarDependente($id_dependente)
-        {
-            try {
-                $historico = [];
-                $dependente = ServidorDependente::findOrFail($id_dependente);
-                if ($dependente && $dependente->historico) {
-                    $historico = json_decode($dependente->historico, true);
-                }
-    
-                $novaAtualizacao = [
-                    "usuario_matricula" => auth()->guard('web')->user()->matricula,
-                    "data" => now(),
-                    "alteracao" => "Reativacao do(a) dependente"
-                ];
-    
-                $historico[] = $novaAtualizacao;
-    
-                $dependente->update([
-                    'status' => 'A',
-                    'historico' => json_encode($historico),
-                    'updated_at' => now()
-                ]);
-    
-                return redirect()->route('servidores.servidor_dependentes_lista')->with('success', 'Dependente reativado com sucesso!');            
-            } catch (\Exception $e) {
-                return redirect()->back()->with('error', 'Erro ao reativar dependente!');
+    {
+        try {
+            $historico = [];
+            $dependente = ServidorDependente::findOrFail($id_dependente);
+            if ($dependente && $dependente->historico) {
+                $historico = json_decode($dependente->historico, true);
             }
+
+            $novaAtualizacao = [
+                "usuario_matricula" => auth()->guard('web')->user()->matricula,
+                "data" => now(),
+                "alteracao" => "Reativacao do(a) dependente"
+            ];
+
+            $historico[] = $novaAtualizacao;
+
+            $dependente->update([
+                'status' => 'A',
+                'historico' => json_encode($historico),
+                'updated_at' => now()
+            ]);
+
+            return redirect()->route('servidores.servidor_dependentes_lista')->with('success', 'Dependente reativado com sucesso!');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Erro ao reativar dependente!');
         }
-    
+    }
 }
