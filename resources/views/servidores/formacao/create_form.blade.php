@@ -20,7 +20,11 @@
         <div class="grid gap-6 md:grid-cols-2">
             <div class="col-span-1">
                 <label class="label dark:text-gray-700">Área</label>
-                <select name="area_id" class="w-full border border-gray-300 rounded-lg p-1">
+                <select name="area_id" id="area_id" class="w-full border border-gray-300 rounded-lg p-1">
+                    <option value="">Selecione a área</option>
+                    @foreach ($areas as $area)
+                        <option value="{{ $area['id'] }}">{{ $area['area'] }}</option>
+                    @endforeach
                 </select>
                 @error('area_id')
                     <span class="text-error text-sm">{{ $message }}</span>
@@ -29,7 +33,8 @@
 
             <div class="col-span-1">
                 <label class="label dark:text-gray-700">Classe</label>
-                <select name="classe_id" class="w-full border-gray-300 rounded-lg p-1">
+                <select name="classe_id" id="classe_id" class="w-full border border-gray-300 rounded-lg p-1" disabled>
+                    <option value="">Selecione a classe</option>
                 </select>
                 @error('classe_id')
                     <span class="text-error text-sm">{{ $message }}</span>
@@ -40,7 +45,8 @@
         <div class="grid gap-6 md:grid-cols-2">
             <div class="col-span-1">
                 <label class="label dark:text-gray-700">Curso</label>
-                <select name="curso_id" class="w-full border-gray-300 rounded-lg p-1">
+                <select name="curso_id" id="curso_id" class="w-full border border-gray-300 rounded-lg p-1" disabled>
+                    <option value="">Selecione o curso</option>
                 </select>
                 @error('curso_id')
                     <span class="text-error text-sm">{{ $message }}</span>
@@ -99,7 +105,7 @@
                 class="inline-flex items-center gap-1 bg-green-600 text-white text-sm font-semibold rounded-full px-4 py-1 hover:bg-green-700 transition">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                     stroke="currentColor" class="w-4 h-4">
-                    <path stroke-linecap="round" stroke-linejoin="round" 
+                    <path stroke-linecap="round" stroke-linejoin="round"
                         d="M17 3H5a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2V7l-4-4zm3 16H4V5h13v3h3v11z M8 15h8M8 11h8" />
                 </svg>
                 Cadastrar</button>
@@ -115,74 +121,61 @@
     </div>
 </div>
 
-{{-- Passando os dados para JS --}}
 <script>
-    const areas = @json($formacao_area);
-    const classes = @json($formacao_classe);
-    const cursos = @json($formacao_curso);
+    const selectArea = document.getElementById('area_id');
+    const selectClasse = document.getElementById('classe_id');
+    const selectCurso = document.getElementById('curso_id');
 
-    const selectArea = document.querySelector('select[name="area_id"]');
-    const selectClasse = document.querySelector('select[name="classe_id"]');
-    const selectCurso = document.querySelector('select[name="curso_id"]');
+    selectArea.addEventListener('change', function() {
+        const areaId = this.value;
 
-    function limparSelect(select) {
-        select.innerHTML = '';
-        const optionDefault = document.createElement('option');
-        optionDefault.value = '';
-        if (select === selectArea) optionDefault.text = 'Selecione a área';
-        else if (select === selectClasse) optionDefault.text = 'Selecione a classe';
-        else if (select === selectCurso) optionDefault.text = 'Selecione o curso';
-        select.appendChild(optionDefault);
-    }
+        // Reset classe e curso
+        selectClasse.innerHTML = '<option value="">Selecione a classe</option>';
+        selectClasse.disabled = true;
 
-    function popularAreas() {
-        limparSelect(selectArea);
-        areas.forEach(area => {
-            const option = document.createElement('option');
-            option.value = area.id;
-            option.textContent = area.area;
-            selectArea.appendChild(option);
-        });
-    }
-
-    function popularClasses(areaId) {
-        limparSelect(selectClasse);
-        limparSelect(selectCurso);
+        selectCurso.innerHTML = '<option value="">Selecione o curso</option>';
+        selectCurso.disabled = true;
 
         if (!areaId) return;
 
-        const filtradas = classes.filter(c => c.area_id == areaId);
-        filtradas.forEach(classe => {
-            const option = document.createElement('option');
-            option.value = classe.id;
-            option.textContent = classe.classe;
-            selectClasse.appendChild(option);
-        });
-    }
+        fetch(`/formacao/classes/${areaId}`)
+            .then(res => res.json())
+            .then(data => {
+                if (data.length > 0) {
+                    data.forEach(classe => {
+                        const option = document.createElement('option');
+                        option.value = classe.id;
+                        option.textContent = classe.classe;
+                        selectClasse.appendChild(option);
+                    });
+                    selectClasse.disabled = false;
+                }
+            })
+            .catch(console.error);
+    });
 
-    function popularCursos(classeId) {
-        limparSelect(selectCurso);
+    selectClasse.addEventListener('change', function() {
+        const classeId = this.value;
+
+        // Reset cursos
+        selectCurso.innerHTML = '<option value="">Selecione o curso</option>';
+        selectCurso.disabled = true;
 
         if (!classeId) return;
 
-        const filtrados = cursos.filter(c => c.classe_id == classeId);
-        filtrados.forEach(curso => {
-            const option = document.createElement('option');
-            option.value = curso.id;
-            option.textContent = curso.curso;
-            selectCurso.appendChild(option);
-        });
-    }
-
-    selectArea.addEventListener('change', function () {
-        popularClasses(this.value);
-        limparSelect(selectCurso);
+        fetch(`/formacao/cursos/${classeId}`)
+            .then(res => res.json())
+            .then(data => {
+                if (data.length > 0) {
+                    data.forEach(curso => {
+                        const option = document.createElement('option');
+                        option.value = curso.id;
+                        option.textContent = curso.curso;
+                        selectCurso.appendChild(option);
+                    });
+                    selectCurso.disabled = false;
+                }
+            })
+            .catch(console.error);
     });
-
-    selectClasse.addEventListener('change', function () {
-        popularCursos(this.value);
-    });
-
-    // Popula área ao carregar
-    popularAreas();
 </script>

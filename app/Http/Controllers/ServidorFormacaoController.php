@@ -78,44 +78,39 @@ class ServidorFormacaoController extends Controller
     }
 
     public function create()
-    {
-        // Ler e extrair os dados de cada arquivo JSON
-        $areasRaw = json_decode(file_get_contents(storage_path('app/public/formacao_area.json')), true);
-        $classesRaw = json_decode(file_get_contents(storage_path('app/public/formacao_classe.json')), true);
-        $cursosRaw = json_decode(file_get_contents(storage_path('app/public/formacao_curso.json')), true);
+{
+    $areas = FormacaoArea::where('status', 'A')
+                ->orderBy('area')
+                ->get();  // só retorna as áreas como coleção
 
-        $areas = $this->extractData($areasRaw);
-        $classes = $this->extractData($classesRaw);
-        $cursos = $this->extractData($cursosRaw);
+    return view('servidores.formacao.create', compact('areas'));
+}
 
-        return view('servidores.formacao.create', [
-            'formacao_area' => $areas,
-            'formacao_classe' => $classes,
-            'formacao_curso' => $cursos,
-        ]);
-    }
 
-//     public function create()
-// {
-//     // Buscar diretamente do banco de dados as áreas, classes e cursos com status ativo
-//     $areas = FormacaoArea::where('status', 'A')
-//                 ->orderBy('area')
-//                 ->get();
 
-//     $classes = FormacaoClasse::where('status', 'A')
-//                 ->orderBy('classe')
-//                 ->get();
 
-//     $cursos = FormacaoCurso::where('status', 'A')
-//                 ->orderBy('curso')
-//                 ->get();
 
-//     return view('servidores.formacao.create', [
-//         'formacao_area' => $areas->toArray(),
-//         'formacao_classe' => $classes->toArray(),
-//         'formacao_curso' => $cursos->toArray(),
-//     ]);
-// }
+    //     public function create()
+    // {
+    //     // Buscar diretamente do banco de dados as áreas, classes e cursos com status ativo
+    //     $areas = FormacaoArea::where('status', 'A')
+    //                 ->orderBy('area')
+    //                 ->get();
+
+    //     $classes = FormacaoClasse::where('status', 'A')
+    //                 ->orderBy('classe')
+    //                 ->get();
+
+    //     $cursos = FormacaoCurso::where('status', 'A')
+    //                 ->orderBy('curso')
+    //                 ->get();
+
+    //     return view('servidores.formacao.create', [
+    //         'formacao_area' => $areas->toArray(),
+    //         'formacao_classe' => $classes->toArray(),
+    //         'formacao_curso' => $cursos->toArray(),
+    //     ]);
+    // }
 
 
     /**

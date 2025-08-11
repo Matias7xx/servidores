@@ -22,5 +22,4 @@ class FormacaoArea extends Model
     {
         return $this->hasMany(FormacaoClasse::class, 'area_id', 'id');
     }
-    
 }

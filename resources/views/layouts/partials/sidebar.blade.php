@@ -87,8 +87,13 @@
                         <div class="dropdown dropdown-end">
                             <div tabindex="0" role="button" class="btn btn-ghost btn-circle avatar">
                                 <div class="w-10 rounded-full">
-                                    <img src="{{ Session::get('foto_servidor')  ? Session::get('foto_servidor') : 'https://img.icons8.com/ios/100/ffffff/user-male-circle.png' }}"
-                                        alt="Foto do Servidor" class="w-32 h-32 rounded-full object-cover">
+                                    @if(Session::get('foto_servidor') && filter_var(Session::get('foto_servidor'), FILTER_VALIDATE_URL))
+                                        <img src="{{ Session::get('foto_servidor') }}" alt="Foto do Servidor" class="w-10 h-10 rounded-full object-cover">
+                                    @else
+                                        <span class="flex items-center justify-center w-10 h-10 rounded-full bg-gray-300 text-gray-600 text-2xl">
+                                            <i class="fa fa-user"></i>
+                                        </span>
+                                    @endif
                                 </div>
                             </div>
                             <ul tabindex="0"

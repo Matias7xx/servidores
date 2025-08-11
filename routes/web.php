@@ -4,6 +4,8 @@ use App\Http\Controllers\AutocompleteController;
 use App\Http\Controllers\AvaliacaoDesempenhoGestorController;
 use App\Http\Controllers\AvaliacaoDesempenhoServidorController;
 use App\Http\Controllers\CidadeController;
+use App\Http\Controllers\FormacaoClasseController;
+use App\Http\Controllers\FormacaoCursoController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ServidorController;
 use App\Http\Controllers\ServidorDependenteController;
@@ -37,6 +39,9 @@ Route::middleware([Authenticate::class])->group(function() {
     Route::post('/servidores/dependentes/reativar', [ServidorDependenteController::class, 'reativar'])->name('servidores.dependentes.reativar');   
     Route::get('/servidores/dependentes/reativar_dependente/{id}', [ServidorDependenteController::class, 'reativarDependente'])->name('servidores.dependentes.reativar_dependente');   
     
+
+    Route::get('/formacao/classes/{area_id}', [FormacaoClasseController::class, 'getClassesByArea']);
+    Route::get('/formacao/cursos/{classe_id}', [FormacaoCursoController::class, 'getCursosByClasse']);
     Route::get('/servidor_formacao_list', [ServidorFormacaoController::class, 'index'])->name('servidores.formacao.list');
     Route::get('/servidor_formacao_create', [ServidorFormacaoController::class, 'create'])->name('servidores.formacao.create');
     Route::post('/servidor_formacao_store', [ServidorFormacaoController::class, 'store'])->name('servidores.formacao.store');

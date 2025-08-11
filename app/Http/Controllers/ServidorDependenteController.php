@@ -92,7 +92,7 @@ class ServidorDependenteController extends Controller
 
         ServidorDependente::create($validated);
 
-        return redirect()->back()->with('success', 'Dependente cadastrado com sucesso!');
+        return redirect()->route('servidores.servidor_dependentes_lista')->with('success', 'Dependente cadastrado com sucesso!');
     }
 
     /**
@@ -194,7 +194,7 @@ class ServidorDependenteController extends Controller
 
         try {
             $dependente->update($validated);
-            return redirect()->back()->with('success', 'Dependente atualizado com sucesso!');
+            return redirect()->route('servidores.servidor_dependentes_lista')->with('success', 'Dependente atualizado com sucesso!');
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Erro ao atualizar dependente!')->withInput();
         }
@@ -251,8 +251,7 @@ class ServidorDependenteController extends Controller
                 'historico' => json_encode($historico),
                 'updated_at' => now()
             ]);
-
-            return redirect('/servidores/dependentes')->with('success', 'Dependente reativado com sucesso!');
+            return redirect()->route('servidores.servidor_dependentes_lista')->with('success', 'Dependente reativado com sucesso!');
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Erro ao reativar dependente!');
         }
