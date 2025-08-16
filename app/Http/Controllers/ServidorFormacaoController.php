@@ -78,44 +78,13 @@ class ServidorFormacaoController extends Controller
     }
 
     public function create()
-{
-    $areas = FormacaoArea::where('status', 'A')
-                ->orderBy('area')
-                ->get();  // só retorna as áreas como coleção
+    {
+        $areas = FormacaoArea::where('status', 'A')
+            ->orderBy('area')
+            ->get();
+        return view('servidores.formacao.create', compact('areas'));
+    }
 
-    return view('servidores.formacao.create', compact('areas'));
-}
-
-
-
-
-
-    //     public function create()
-    // {
-    //     // Buscar diretamente do banco de dados as áreas, classes e cursos com status ativo
-    //     $areas = FormacaoArea::where('status', 'A')
-    //                 ->orderBy('area')
-    //                 ->get();
-
-    //     $classes = FormacaoClasse::where('status', 'A')
-    //                 ->orderBy('classe')
-    //                 ->get();
-
-    //     $cursos = FormacaoCurso::where('status', 'A')
-    //                 ->orderBy('curso')
-    //                 ->get();
-
-    //     return view('servidores.formacao.create', [
-    //         'formacao_area' => $areas->toArray(),
-    //         'formacao_classe' => $classes->toArray(),
-    //         'formacao_curso' => $cursos->toArray(),
-    //     ]);
-    // }
-
-
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(ServidorFormacaoRequest $request)
     {
 
@@ -196,14 +165,9 @@ class ServidorFormacaoController extends Controller
      */
     public function edit($id)
     {
-        // Ler e extrair os dados de cada arquivo JSON
-        $areasRaw = json_decode(file_get_contents(storage_path('app/public/formacao_area.json')), true);
-        $classesRaw = json_decode(file_get_contents(storage_path('app/public/formacao_classe.json')), true);
-        $cursosRaw = json_decode(file_get_contents(storage_path('app/public/formacao_curso.json')), true);
-
-        $areas = $this->extractData($areasRaw);
-        $classes = $this->extractData($classesRaw);
-        $cursos = $this->extractData($cursosRaw);
+        $areas = FormacaoArea::where('status', 'A')
+            ->orderBy('area')
+            ->get();
 
         $servidorFormacao = ServidorFormacao::where('id', $id)
             ->select('id', 'curso_id', 'data_conclusao', 'anexo_frente', 'anexo_verso', 'obs', 'status', 'validacao_status')
@@ -223,7 +187,7 @@ class ServidorFormacaoController extends Controller
                 }
             ])
             ->firstOrFail();
-        return view('servidores.formacao.edit', compact('servidorFormacao', 'areas', 'classes', 'cursos'));
+        return view('servidores.formacao.edit', compact('servidorFormacao', 'areas'));
     }
 
     /**
@@ -311,7 +275,8 @@ class ServidorFormacaoController extends Controller
 
             $servidorFormacao->update($updateData);
 
-            return redirect()->back()->with('success', 'Formação acadêmica atualizada com sucesso!');
+            return redirect()->route('servidores.formacao.list')
+            ->with('success', 'Formação acadêmica atualizada com sucesso!');
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Erro ao atualizar Formação acadêmica: ' . $e->getMessage());
         }

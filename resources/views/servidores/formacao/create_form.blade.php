@@ -138,7 +138,8 @@
 
         if (!areaId) return;
 
-        fetch(`/formacao/classes/${areaId}`)
+        const url = '{{ route("servidores.formacao.classe", ["area_id" => "REPLACE_ME"]) }}'.replace('REPLACE_ME', areaId);
+        fetch(url)
             .then(res => res.json())
             .then(data => {
                 if (data.length > 0) {
@@ -163,7 +164,8 @@
 
         if (!classeId) return;
 
-        fetch(`/formacao/cursos/${classeId}`)
+        const url = '{{ route("servidores.formacao.curso", ["classe_id" => "REPLACE_ME"]) }}'.replace('REPLACE_ME', classeId);
+        fetch(url)
             .then(res => res.json())
             .then(data => {
                 if (data.length > 0) {

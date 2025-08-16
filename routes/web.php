@@ -40,8 +40,8 @@ Route::middleware([Authenticate::class])->group(function() {
     Route::get('/servidores/dependentes/reativar_dependente/{id}', [ServidorDependenteController::class, 'reativarDependente'])->name('servidores.dependentes.reativar_dependente');   
     
 
-    Route::get('/formacao/classes/{area_id}', [FormacaoClasseController::class, 'getClassesByArea']);
-    Route::get('/formacao/cursos/{classe_id}', [FormacaoCursoController::class, 'getCursosByClasse']);
+    Route::get('/formacao/classes/{area_id}', [FormacaoClasseController::class, 'getClassesByArea'])->name('servidores.formacao.classe');
+    Route::get('/formacao/cursos/{classe_id}', [FormacaoCursoController::class, 'getCursosByClasse'])->name('servidores.formacao.curso');
     Route::get('/servidor_formacao_list', [ServidorFormacaoController::class, 'index'])->name('servidores.formacao.list');
     Route::get('/servidor_formacao_create', [ServidorFormacaoController::class, 'create'])->name('servidores.formacao.create');
     Route::post('/servidor_formacao_store', [ServidorFormacaoController::class, 'store'])->name('servidores.formacao.store');

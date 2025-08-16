@@ -73,7 +73,8 @@ return [
     |
     */
 
-    'home' => '/',
+    // 'home' => '/',
+    'home' => '/servidores-novo-acesso-temporario-homologacao',
 
     /*
     |--------------------------------------------------------------------------
