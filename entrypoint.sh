@@ -1,32 +1,29 @@
 #!/bin/bash
-
-# Saia imediatamente em caso de erro
 set -e
 
-# Instala as dependências do Composer, se o vendor não existir
+echo "Instalando dependências..."
 composer install --no-interaction --prefer-dist --optimize-autoloader
 
-# Gera a chave da aplicação, caso não exista
+echo "Gerando chave da aplicação..."
 php artisan key:generate --force
 
-# Executa as migrações do banco de dados
+echo "Executando migrações..."
 php artisan migrate --force
 
-# Cria o link simbólico para o storage, se ainda não existir
+echo "Criando link simbólico do storage..."
 php artisan storage:link
 
-echo "🏗️ Executando install e build do npm..."
+echo "Executando install e build do npm..."
 npm install
 npm run build
 
-# Executa qualquer outra preparação necessária
+echo "Limpando cache..."
 php artisan config:clear
 php artisan route:clear
-# php artisan config:cache
-# php artisan route:cache
 
-#Iniciar o processamento das filas
-# php artisan queue:work
+echo "Ajustando permissões de pasta..."
+chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
+chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 
-# Inicie o Apache no foreground
+echo "Iniciando servidor Apache..."
 apache2-foreground

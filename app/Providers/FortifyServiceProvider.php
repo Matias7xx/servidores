@@ -90,7 +90,7 @@ class FortifyServiceProvider extends ServiceProvider
 
                                 /* 3B. Usuário não existe → cria */
                                 $user = User::create([
-                                    'servidor_id'        => $servidor_dados['id'],
+                                    'servidor_id'        => $servidor_dados['id_servidor'],
                                     'name'               => $servidor_dados['nome'],
                                     'email'              => $servidor_dados['email']         ?: $servidor_dados['matricula'] . '@pc.pb.gov.br',
                                     'matricula'          => $servidor_dados['matricula'],

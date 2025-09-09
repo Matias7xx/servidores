@@ -1,8 +1,6 @@
 # Use uma imagem base oficial do PHP com Apache
 FROM php:8.2-apache
 
-#RUN useradd -m -s /bin/bash -G www-data harbor
-
 # Instale as extensões necessárias
 RUN apt-get update && apt-get install -y \
     sudo \
@@ -16,6 +14,8 @@ RUN apt-get update && apt-get install -y \
     unzip \
     nodejs \
     npm \
+    postgresql-client \
+    default-mysql-client \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install gd pdo pdo_pgsql pdo_mysql zip
 
