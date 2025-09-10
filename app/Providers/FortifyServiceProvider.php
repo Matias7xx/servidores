@@ -28,7 +28,10 @@ class FortifyServiceProvider extends ServiceProvider
     public function boot(): void
     {
         /* ---------- Views ---------- */
-        Fortify::loginView(fn() => view('auth.login'));
+        //Fortify::loginView(fn() => view('auth.login'));
+
+        //Chamar a view de Login em VUE
+        Fortify::loginView(fn() => view('vue-app'));
 
         /* ---------- Ações ---------- */
         Fortify::createUsersUsing(CreateNewUser::class);
