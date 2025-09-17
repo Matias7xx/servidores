@@ -27,7 +27,34 @@
             csrfToken: '{{ csrf_token() }}',
             baseUrl: '{{ url('/') }}'
         };
+
+        @if(auth()->check())
+        window.User = {
+            id: {{ auth()->user()->id }},
+            matricula: '{{ auth()->user()->matricula }}',
+            name: '{{ auth()->user()->name ?? '' }}',
+            email: '{{ auth()->user()->email ?? '' }}',
+            cargo: '{{ auth()->user()->cargo ?? '' }}',
+            status: '{{ auth()->user()->status ?? '' }}'
+        };
+        @else
+        window.User = null;
+        @endif
+
+        @if(session('foto_servidor'))
+        window.fotoServidor = '{{ session('foto_servidor') }}';
+        @endif
+
+        @if(session('servidor_nome'))
+        window.servidorNome = '{{ session('servidor_nome') }}';
+        @endif
+
+        // Debug
+        console.log('Dados carregados:', {
+            user: window.User,
+            authenticated: {{ auth()->check() ? 'true' : 'false' }}
+        });
     </script>
-    
+
 </body>
 </html>

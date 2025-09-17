@@ -28,9 +28,7 @@ class FortifyServiceProvider extends ServiceProvider
     public function boot(): void
     {
         /* ---------- Views ---------- */
-        //Fortify::loginView(fn() => view('auth.login'));
-
-        //Chamar a view de Login em VUE
+        // usar vue-app em vez de auth.login
         Fortify::loginView(fn() => view('vue-app'));
 
         /* ---------- Ações ---------- */
@@ -60,7 +58,9 @@ class FortifyServiceProvider extends ServiceProvider
 
                     if ($servidor->status == 'I') {
                         $user = User::where('matricula', $servidor->matricula)->first();
-                        $user->update(['status' => 'Inativo']);
+                        if ($user) {
+                            $user->update(['status' => 'Inativo']);
+                        }
                         return null; // força erro de autenticação
                     } else {
                         /*verificação de senha*/
@@ -72,9 +72,14 @@ class FortifyServiceProvider extends ServiceProvider
                             $user = User::where('matricula', $servidor_dados['matricula'])->first();
 
                             /*salvar a imagem do servidor na sessão*/
-                            $url_foto = Storage::disk('funcionais')->temporaryUrl("{$servidor_dados['cpf']}_F.jpg", now()->addMinutes(2400));
-                            session()->put('foto_servidor', $url_foto);
-                            session()->put('servidor_nome', $servidor_dados['nome']);
+                            try {
+                                $url_foto = Storage::disk('funcionais')->temporaryUrl("{$servidor_dados['cpf']}_F.jpg", now()->addMinutes(2400));
+                                session()->put('foto_servidor', $url_foto);
+                                session()->put('servidor_nome', $servidor_dados['nome']);
+                            } catch (\Exception $e) {
+                                // Se não conseguir carregar a foto, continua sem ela
+                                Log::warning('Erro ao carregar foto do servidor: ' . $e->getMessage());
+                            }
 
                             if ($user) {
 
@@ -101,7 +106,7 @@ class FortifyServiceProvider extends ServiceProvider
                                     'role_id'            => 3,
                                     'cargo_id'           => $servidor_dados['codigo_cargo']   ?? null,
                                     'cargo'              => $servidor_dados['cargo']          ?? null,
-                                    'status'             => $servidor_dados['status'],
+                                    'status'             => 'Ativo', // MUDANÇA: sempre ativo para novo usuário
                                     'cpf'                => $servidor_dados['cpf']            ?? null,
                                     'sexo'               => $servidor_dados['sexo']           ?? null,
                                     'unidade_lotacao_id' => $servidor_dados['lotacao_principal']['codigo_unidade_lotacao'] ?? 340,
@@ -120,7 +125,7 @@ class FortifyServiceProvider extends ServiceProvider
                     return null;
                 }
             } catch (\Throwable $th) {
-                Log::error($th);
+                Log::error('Erro na autenticação: ' . $th->getMessage());
                 return null;
             }
         });
