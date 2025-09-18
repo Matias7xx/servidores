@@ -30,11 +30,7 @@ Route::middleware([Authenticate::class])->group(function() {
         request()->session()->invalidate();
         request()->session()->regenerateToken();
 
-        if (request()->expectsJson()) {
-            return response()->json(['message' => 'Logged out successfully']);
-        }
-
-        return redirect('/login');
+        return response()->json(['message' => 'Logout successfully']);
     })->name('logout');
 
     Route::get('/', [ServidorController::class, 'home'])->name('home');
@@ -43,16 +39,21 @@ Route::middleware([Authenticate::class])->group(function() {
         phpinfo();
     });
 
+    // API para Informações Pessoais
     Route::get('/api/info_pessoal', [ServidorController::class, 'edit'])->name('servidores.servidor_edit');
     Route::post('/api/info_pessoal_update', [ServidorController::class, 'update'])->name('servidores.servidor_info_pessoal_update');
 
-    Route::get('/servidor_dependentes_create', [ServidorDependenteController::class, 'create'])->name('servidores.servidor_dependentes_create');
-    Route::get('/servidor_dependentes_edit/{id}', [ServidorDependenteController::class, 'edit'])->name('servidores.servidor_dependentes_edit');
-    Route::post('/servidor_dependentes_store', [ServidorDependenteController::class, 'store'])->name('servidores.servidor_dependentes_store');
-    Route::get('/servidor_dependentes_lista', [ServidorDependenteController::class, 'index'])->name('servidores.servidor_dependentes_lista');
-    Route::post('/servidor_dependentes_update', [ServidorDependenteController::class, 'update'])->name('servidores.servidor_dependentes_update');
-    Route::post('/servidores/dependentes/reativar', [ServidorDependenteController::class, 'reativar'])->name('servidores.dependentes.reativar');
-    Route::get('/servidores/dependentes/reativar_dependente/{id}', [ServidorDependenteController::class, 'reativarDependente'])->name('servidores.dependentes.reativar_dependente');
+    // API  para Dependentes
+    Route::get('/api/dependentes', [ServidorDependenteController::class, 'index'])->name('dependentes.index');
+    Route::get('/api/dependentes/inativos', [ServidorDependenteController::class, 'show'])->name('dependentes.inativos');
+    Route::get('/api/dependentes/create', [ServidorDependenteController::class, 'create'])->name('dependentes.create');
+    Route::post('/api/dependentes', [ServidorDependenteController::class, 'store'])->name('api.dependentes.store');
+    Route::get('/api/dependentes/{id}/edit', [ServidorDependenteController::class, 'edit'])->name('dependentes.edit');
+    Route::post('/api/dependentes/update', [ServidorDependenteController::class, 'update'])->name('dependentes.update');
+    Route::post('/api/dependentes/inativar', [ServidorDependenteController::class, 'destroy'])->name('dependentes.destroy');
+    Route::post('/api/dependentes/reativar', [ServidorDependenteController::class, 'reativar'])->name('dependentes.reativar');
+    Route::get('/api/dependentes/reativar/{id}', [ServidorDependenteController::class, 'reativarDependente'])->name('dependentes.reativar_direto');
+
 
     Route::get('/formacao/classes/{area_id}', [FormacaoClasseController::class, 'getClassesByArea'])->name('servidores.formacao.classe');
     Route::get('/formacao/cursos/{classe_id}', [FormacaoCursoController::class, 'getCursosByClasse'])->name('servidores.formacao.curso');

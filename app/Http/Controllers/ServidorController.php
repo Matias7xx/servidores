@@ -7,14 +7,10 @@ use App\Models\Estado;
 use App\Models\Servidor;
 use Illuminate\Http\Request;
 use App\Models\ServidorConfig;
-use App\Http\Requests\ServidorRequest;
 use App\Models\User;
-use Intervention\Image\Facades\Image;
-use Illuminate\Support\Facades\Http;
 
 class ServidorController extends Controller
 {
-
     public function home()
     {
         try {
@@ -22,7 +18,6 @@ class ServidorController extends Controller
                     ->where('status', 'Ativo')
                     ->first();
 
-            // retorna a view Vue com os dados do usuário
             return view('vue-app')->with([
                 'user' => $user,
                 'userData' => $user
@@ -36,69 +31,47 @@ class ServidorController extends Controller
     public function edit(Request $request)
     {
         try {
-            // Se for uma requisição AJAX/fetch (do Vue), retorna JSON
-            if ($request->expectsJson() || $request->wantsJson() || $request->ajax()) {
-                $cidades = Cidade::all()->sortBy('nome')->values();
-                $estados = Estado::all()->sortBy('sigla')->values();
-                $servidor_config = ServidorConfig::all()->values();
-                $user = User::where('matricula', auth()->guard('web')->user()->matricula)->first();
+            $cidades = Cidade::all()->sortBy('nome')->values();
+            $estados = Estado::all()->sortBy('sigla')->values();
+            $servidor_config = ServidorConfig::all()->values();
+            $user = User::where('matricula', auth()->guard('web')->user()->matricula)->first();
 
-                $servidor = Servidor::where('matricula', auth()->guard('web')->user()->matricula)
-                    ->with('cargo_nome')
-                    ->with('cidade_nome')
-                    ->where('status', 'A')
-                    ->first();
+            $servidor = Servidor::where('matricula', auth()->guard('web')->user()->matricula)
+                ->with('cargo_nome')
+                ->with('cidade_nome')
+                ->where('status', 'A')
+                ->first();
 
-                if (!$servidor) {
-                    return response()->json([
-                        'success' => false,
-                        'message' => 'Servidor não encontrado'
-                    ], 404);
-                }
-
+            if (!$servidor) {
                 return response()->json([
-                    'success' => true,
-                    'data' => [
-                        'servidor' => $servidor,
-                        'cidades' => $cidades,
-                        'estados' => $estados,
-                        'servidor_config' => $servidor_config,
-                        'user' => $user
-                    ]
-                ]);
+                    'success' => false,
+                    'message' => 'Servidor não encontrado'
+                ], 404);
             }
 
-            // Se for navegação normal (F5, digitou URL, etc.), retorna a view Vue
-            $user = User::where('matricula', auth()->guard('web')->user()->matricula)
-                    ->where('status', 'Ativo')
-                    ->first();
-
-            return view('vue-app')->with([
-                'user' => $user,
-                'userData' => $user
+            return response()->json([
+                'success' => true,
+                'data' => [
+                    'servidor' => $servidor,
+                    'cidades' => $cidades,
+                    'estados' => $estados,
+                    'servidor_config' => $servidor_config,
+                    'user' => $user
+                ]
             ]);
 
         } catch (\Exception $e) {
-            // Se for AJAX, retorna erro JSON
-            if ($request->expectsJson() || $request->wantsJson() || $request->ajax()) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Erro interno do servidor',
-                    'error' => $e->getMessage()
-                ], 500);
-            }
-
-            // Se for navegação normal, redireciona
-            return redirect()->route('home')->with('error', 'Erro ao carregar dados do usuário');
+            return response()->json([
+                'success' => false,
+                'message' => 'Erro interno do servidor',
+                'error' => $e->getMessage()
+            ], 500);
         }
     }
 
     public function update(Request $request)
     {
         try {
-            // Debug: Log dos dados recebidos
-            \Log::info('Dados recebidos no update:', $request->all());
-
             $idServidor = $request->id;
 
             if (!$idServidor) {
@@ -117,10 +90,8 @@ class ServidorController extends Controller
                 ], 404);
             }
 
-            //Apenas campos que EXISTEM no banco
             $updateData = [];
 
-            // Mapeamento: campo_do_vue => campo_do_banco
             $fieldMapping = [
                 'orientacao' => 'orientacao',
                 'datanascimento' => 'datanascimento',
@@ -153,7 +124,7 @@ class ServidorController extends Controller
                 'complemento' => 'complemento',
                 'estadocivil' => 'estadocivil',
                 'conjuge' => 'conjuge',
-                'cidade_id' => 'cidade', // Mapear cidade_id para cidade
+                'cidade_id' => 'cidade',
             ];
 
             foreach ($fieldMapping as $vueField => $dbField) {
@@ -162,21 +133,14 @@ class ServidorController extends Controller
                 }
             }
 
-            // TRATAMENTO PARA O ESTADO
             if ($request->has('estado') && $request->estado !== null) {
-                // Se o valor recebido já é uma sigla (2 caracteres), usar diretamente
                 if (strlen($request->estado) == 2) {
                     $updateData['estado'] = $request->estado;
                 } else {
-                    // Se recebeu um nome/sigla do select, usar diretamente
                     $updateData['estado'] = $request->estado;
                 }
             }
 
-            // Debug: Log dos dados que serão atualizados
-            \Log::info('Dados para atualização:', $updateData);
-
-            // Atualizar dados
             $servidor->update($updateData);
 
             return response()->json([
@@ -186,12 +150,6 @@ class ServidorController extends Controller
             ]);
 
         } catch (\Exception $e) {
-            \Log::error('Erro no update:', [
-                'message' => $e->getMessage(),
-                'file' => $e->getFile(),
-                'line' => $e->getLine()
-            ]);
-
             return response()->json([
                 'success' => false,
                 'message' => 'Erro ao atualizar dados',
