@@ -52,7 +52,10 @@ class ServidorFormacaoController extends Controller
             ->orderBy('data_conclusao', 'desc')
             ->get();
 
-        return view('servidores.formacao.list', compact('formacao'));
+            return response()->json([
+                'success' => true,
+                'data' => $formacao
+            ]);
     }
 
 
@@ -82,7 +85,11 @@ class ServidorFormacaoController extends Controller
         $areas = FormacaoArea::where('status', 'A')
             ->orderBy('area')
             ->get();
-        return view('servidores.formacao.create', compact('areas'));
+
+            return response()->json([
+                'success' => true,
+                'data' => $areas
+            ]);
     }
 
     public function store(ServidorFormacaoRequest $request)
@@ -148,7 +155,10 @@ class ServidorFormacaoController extends Controller
         // Cria o registro
         ServidorFormacao::create($validated);
 
-        return redirect()->back()->with('success', 'Formacao academica cadastrada com sucesso!');
+            return response()->json([
+                'success' => true,
+                'message' => 'Formação acadêmica cadastrada com sucesso!'
+            ]);
     }
 
 
@@ -187,7 +197,14 @@ class ServidorFormacaoController extends Controller
                 }
             ])
             ->firstOrFail();
-        return view('servidores.formacao.edit', compact('servidorFormacao', 'areas'));
+
+            return response()->json([
+                'success' => true,
+                'data' => [
+                    'areas' => $areas,
+                    'servidorFormacao' => $servidorFormacao
+                ]
+            ]);
     }
 
     /**
@@ -223,7 +240,10 @@ class ServidorFormacaoController extends Controller
             }
 
             if (!$needsUpdate) {
-                return redirect()->back()->with('error', 'Nenhuma alteracao foi realizada.');
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Nenhuma alteração foi realizada.'
+                ]);
             }
 
             if ($request->hasFile('anexo_frente')) {
@@ -275,10 +295,17 @@ class ServidorFormacaoController extends Controller
 
             $servidorFormacao->update($updateData);
 
-            return redirect()->route('servidores.formacao.list')
-            ->with('success', 'Formação acadêmica atualizada com sucesso!');
+            return response()->json([
+                'success' => true,
+                'message' => 'Formação acadêmica atualizada com sucesso!'
+            ]);
+
         } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Erro ao atualizar Formação acadêmica: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Erro ao atualizar formação acadêmica',
+                'error' => $e->getMessage()
+            ], 500);
         }
     }
 

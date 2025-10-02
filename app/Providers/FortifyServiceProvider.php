@@ -29,7 +29,7 @@ class FortifyServiceProvider extends ServiceProvider
     {
         /* ---------- Views ---------- */
         // usar vue-app em vez de auth.login
-        Fortify::loginView(fn() => view('vue-app'));
+        //Fortify::loginView(fn() => view('vue-app'));
 
         /* ---------- Ações ---------- */
         Fortify::createUsersUsing(CreateNewUser::class);
@@ -72,14 +72,9 @@ class FortifyServiceProvider extends ServiceProvider
                             $user = User::where('matricula', $servidor_dados['matricula'])->first();
 
                             /*salvar a imagem do servidor na sessão*/
-                            try {
-                                $url_foto = Storage::disk('funcionais')->temporaryUrl("{$servidor_dados['cpf']}_F.jpg", now()->addMinutes(2400));
-                                session()->put('foto_servidor', $url_foto);
-                                session()->put('servidor_nome', $servidor_dados['nome']);
-                            } catch (\Exception $e) {
-                                // Se não conseguir carregar a foto, continua sem ela
-                                Log::warning('Erro ao carregar foto do servidor: ' . $e->getMessage());
-                            }
+                            $url_foto = Storage::disk('funcionais')->temporaryUrl("{$servidor_dados['cpf']}_F.jpg", now()->addMinutes(2400));
+                            session()->put('foto_servidor', $url_foto);
+                            session()->put('servidor_nome', $servidor_dados['nome']);
 
                             if ($user) {
 
@@ -98,7 +93,7 @@ class FortifyServiceProvider extends ServiceProvider
 
                                 /* 3B. Usuário não existe → cria */
                                 $user = User::create([
-                                    'servidor_id'        => $servidor_dados['id_servidor'],
+                                    'servidor_id'        => $servidor_dados['id'],
                                     'name'               => $servidor_dados['nome'],
                                     'email'              => $servidor_dados['email']         ?: $servidor_dados['matricula'] . '@pc.pb.gov.br',
                                     'matricula'          => $servidor_dados['matricula'],
@@ -106,7 +101,7 @@ class FortifyServiceProvider extends ServiceProvider
                                     'role_id'            => 3,
                                     'cargo_id'           => $servidor_dados['codigo_cargo']   ?? null,
                                     'cargo'              => $servidor_dados['cargo']          ?? null,
-                                    'status'             => 'Ativo', // MUDANÇA: sempre ativo para novo usuário
+                                    'status'             => $servidor_dados['status'],
                                     'cpf'                => $servidor_dados['cpf']            ?? null,
                                     'sexo'               => $servidor_dados['sexo']           ?? null,
                                     'unidade_lotacao_id' => $servidor_dados['lotacao_principal']['codigo_unidade_lotacao'] ?? 340,

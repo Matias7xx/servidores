@@ -13,9 +13,9 @@ php artisan migrate --force
 echo "Criando link simbólico do storage..."
 php artisan storage:link
 
-echo "Executando install e build do npm..."
-npm install
-npm run build
+#echo "Executando install e build do npm..."
+#npm install
+#npm run build
 
 echo "Limpando cache..."
 php artisan config:clear
