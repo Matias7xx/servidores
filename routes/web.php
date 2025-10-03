@@ -13,6 +13,7 @@ use App\Http\Controllers\ServidorFormacaoController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Facades\Storage;
 
 URL::forceScheme(env('HTTP_SCHEMA'));
 URL::forceRootUrl(env('APP_URL'));
@@ -26,9 +27,23 @@ Route::post('/login', function() {
     if (Auth::attempt($credentials, request()->filled('remember'))) {
         request()->session()->regenerate();
 
+        $user = auth()->user();
+
+        // Buscar foto da sessão (já definida no FortifyServiceProvider)
+        $url_foto = session('foto_servidor');
+
         return response()->json([
             'success' => true,
-            'user' => auth()->user()
+            'user' => [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'matricula' => $user->matricula,
+                'cpf' => $user->cpf,
+                'cargo' => $user->cargo,
+                'status' => $user->status,
+                'foto' => $url_foto, // Foto vem da sessão
+            ]
         ]);
     }
 
@@ -48,7 +63,36 @@ Route::middleware(['auth'])->group(function() {
 
     // API User
     Route::get('/api/user', function() {
-        return response()->json(auth()->user());
+        $user = auth()->user();
+
+        // Buscar a foto da sessão ou gerar nova URL temporária
+        $url_foto = session('foto_servidor');
+
+        // Se não houver na sessão, tenta gerar uma nova
+        if (!$url_foto && $user->cpf) {
+            try {
+                $url_foto = \Storage::disk('funcionais')->temporaryUrl(
+                    "{$user->cpf}_F.jpg",
+                    now()->addMinutes(2400)
+                );
+                // Salva na sessão para não precisar gerar toda hora
+                session()->put('foto_servidor', $url_foto);
+            } catch (\Exception $e) {
+                \Log::warning("Foto não encontrada para CPF: {$user->cpf}");
+                $url_foto = null;
+            }
+        }
+
+        return response()->json([
+            'id' => $user->id,
+            'name' => $user->name,
+            'email' => $user->email,
+            'matricula' => $user->matricula,
+            'cpf' => $user->cpf,
+            'cargo' => $user->cargo,
+            'status' => $user->status,
+            'foto' => $url_foto,
+        ]);
     });
 
     // Logout
